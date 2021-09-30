@@ -1,0 +1,23 @@
+OUTPUT_DIR: ./output/psp_global
+# OUTPUT_DIR: ./output/Global_PSP
+
+MODEL:
+  MODEL: "psp_resnet50_voc"
+  LOSS: "DiceLossV1"
+  DEEP_SUP: "v2"
+
+SOLVER:
+  LR: 0.01
+  EPOCHS: 2
+  SAVE_INTERVAL_EPOCH: 1
+  BATCH_SIZE_TRAIN: 2
+
+DATA:
+  DOWN_SAMPLE_RATE: 1.0
+  DOWN_SAMPLE_RATE_TEST: 1.0
+  DATASET_TRAIN: './data/data_split/0_train_backup.txt'
+  DATASET_VALID: './data/data_split/0_valid_backup.txt'
+  DATASET_TEST: './data/data_split/0_valid.txt'
+
+  CROP_METHOD_TRAIN: "Resize"
+  CROP_METHOD_TEST: "Resize"

@@ -1,0 +1,18 @@
+OUTPUT_DIR: ./output/DeepLabv3+
+
+MODEL:
+  MODEL: "DeepLabv3+"
+  LOSS: "DiceLossV1"
+  DEEP_SUP: "v2"
+
+SOLVER:
+  LR: 0.01
+  EPOCHS: 100
+  SAVE_INTERVAL_EPOCH: 5
+  BATCH_SIZE_TRAIN: 4
+
+DATA:
+  DOWN_SAMPLE_RATE: 4.0
+  DATASET_TRAIN: './data/data_split/0_train_backup.txt'
+  DATASET_VALID: './data/data_split/0_valid_backup.txt'
+  DATASET_TEST: './data/data_split/0_valid_backup.txt'
