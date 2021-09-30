@@ -16,7 +16,7 @@ import imageio
 from lib.checkpoint import CheckPointer
 from lib.evaluation import do_evaluation, do_test_evaluation
 from lib.inference import inference_dense_crop, inference_resize
-from lib.inference_single import inference_single_dense_crop, inference_single_resize
+from lib.inference_single import inference_single_dense_crop, inference_single_resize, inference_single_dense_crop_progress
 
 
 class Solver:
@@ -372,4 +372,41 @@ class Solver:
             mask_to_save = (pred_mask * 255).astype(np.uint8)
 
             # cv2.imwrite("tmp.jpg", mask_to_save)
+            return mask_to_save
+
+    def test_single_progress(self, dataloader_test, progress):
+        """
+        test on test data set
+        :param dataloader_test:
+        :param tta:
+        :return:
+        """
+        checkpointer = CheckPointer(self.model, self.logger, self.optimizer, save_dir=self.output_dir)
+        checkpointer.load(resume_iter=self.cfg.MODEL.RESUME, need_resume=True, best_valid=True)
+
+        self.device = torch.device("cpu")
+        self.model.to(self.device)
+
+        self.model.eval()
+        for image, index in tqdm(dataloader_test, desc='test, inference....'):
+            # image: B, 3, H, W
+            # mask: B, H, W
+            # index: [] 只有1个数，对应其索引
+            if self.cfg.DATA.CROP_METHOD_TEST == 'DenseCrop':
+                # pred_mask = inference_single_dense_crop(dataloader_test, image, index, self.model, self.device,
+                #                                         self.cfg)
+                pred_mask = inference_single_dense_crop_progress(dataloader_test, image, index, self.model, self.device,
+                                                        self.cfg, progress)
+
+            elif self.cfg.DATA.CROP_METHOD_TEST == "Resize":
+                pred_mask = inference_single_resize(dataloader_test, image, index, self.model, self.device, self.cfg,
+                                                    False)
+
+            pred_mask = pred_mask[0]
+
+            pred_mask = pred_mask.squeeze(0)
+            pred_mask[pred_mask > 0.5] = 1
+            pred_mask[pred_mask <= 0.5] = 0
+            mask_to_save = (pred_mask * 255).astype(np.uint8)
+
             return mask_to_save

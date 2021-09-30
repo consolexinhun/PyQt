@@ -4,6 +4,8 @@ import numpy as np
 
 from .post_process import resize_ndarry, merge_patch
 
+from PyQt5.QtWidgets import QApplication
+
 def inference_single_dense_crop(dataloader, image, index, model, device, cfg):
     """
     func:
@@ -25,6 +27,45 @@ def inference_single_dense_crop(dataloader, image, index, model, device, cfg):
         test_patch_batch = image[start_idx: end_idx].to(device)
         test_patch_batch_mask = model(test_patch_batch).squeeze(1)  # B, H, W
         pred_patches_mask[start_idx: end_idx] = test_patch_batch_mask.detach().cpu()
+
+
+    ori_h, ori_w = ori_img.shape[:2]  # (5412, 5435)
+    scale_h = round(ori_h / cfg.DATA.DOWN_SAMPLE_RATE_TEST)  # 1353
+    scale_w = round(ori_w / cfg.DATA.DOWN_SAMPLE_RATE_TEST)  # 1359
+    # 合并成单张图片
+    single_image_pred_mask_binary, single_image_pred_mask_probas = merge_patch(
+                    pred_patches_mask,
+                    h=scale_h, w=scale_w,
+                    stride=cfg.DATA.DENSE_CROP_STRIDE,
+                    merge_method=cfg.DATA.DENSE_CROP_MERGE_METHOD)
+    single_image_pred_mask_binary = resize_ndarry(single_image_pred_mask_binary, ori_w, ori_h)  # H, W
+    pred_masks_binary.append(single_image_pred_mask_binary[None, :, :])  # 1, H, W
+    return pred_masks_binary
+
+def inference_single_dense_crop_progress(dataloader, image, index, model, device, cfg, progress):
+    """
+    func:
+        密集裁剪
+    return:
+        pred_masks_binary
+    """
+    ori_img =  dataloader.dataset.get_img(index[0])
+    pred_masks_binary = []
+    # 每次送 8 个补丁进去
+    # test_batch_size = cfg.SOLVER.BATCH_SIZE_PER_IMG_TEST
+    test_batch_size = 4
+    patch_nums, _, h, w = image.shape
+    pred_patches_mask = torch.zeros(patch_nums, h, w).float()
+
+    for i in range(0, patch_nums, test_batch_size):
+        start_idx = i
+        end_idx = min(i + test_batch_size, patch_nums)
+        test_patch_batch = image[start_idx: end_idx].to(device)
+        test_patch_batch_mask = model(test_patch_batch).squeeze(1)  # B, H, W
+        pred_patches_mask[start_idx: end_idx] = test_patch_batch_mask.detach().cpu()
+
+        progress.progressBar.setValue(int(end_idx*100/patch_nums))
+        QApplication.processEvents()
 
     ori_h, ori_w = ori_img.shape[:2]  # (5412, 5435)
     scale_h = round(ori_h / cfg.DATA.DOWN_SAMPLE_RATE_TEST)  # 1353

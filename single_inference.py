@@ -42,6 +42,19 @@ def do_inference(img_path):
     return res
 
 
+def do_inference_progress(img_path, progress):
+    dataset_test = ColonoscopySingle(
+                                img_path=img_path,
+                                transforms=transform_test)
+    dataloader_test = DataLoader(dataset_test,
+                                batch_size=cfg.SOLVER.BATCH_SIZE_TEST,
+                                num_workers=0,
+                                collate_fn=collate_fn_single)
+    res = solver.test_single_progress(dataloader_test=dataloader_test, progress=progress)
+    return res
+# 主要解决不同步显示的问题
+
+
 if __name__ == "__main__":
     do_inference("D:/D201709874_2019-05-21 12_42_42-lv1-31315-17194-2766-2641.jpg")
 

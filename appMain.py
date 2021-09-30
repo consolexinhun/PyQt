@@ -5,11 +5,19 @@ import numpy as np
 from PIL import Image, ImageQt
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog, \
-     QGraphicsScene
+     QGraphicsScene, QProgressBar, QProgressDialog
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import QThread
 
-from single_inference import do_inference
+from single_inference import do_inference, do_inference_progress
+# from progress import ProgressBarWindow
+
+
+class MyProgressBar(QMainWindow):
+    def __init__(self, parent=None):
+        super(MyProgressBar, self).__init__(parent)
+        loadUi("progress.ui", self)
 
 
 def graph_show(graph, img):
@@ -147,8 +155,19 @@ class MyMainWindow(QMainWindow):
             全监督PSP分割
         :return:
         """
-        self.target_content = do_inference(self.img_name)
+
+        progress = MyProgressBar(self)
+        progress.progressBar.setValue(0)
+        progress.show()
+        QApplication.processEvents()
+        # for i in range(1, 101):
+        #     progress.progressBar.setValue(i)
+        #     QApplication.processEvents()
+        self.target_content= do_inference_progress(self.img_name, progress)
+
+        progress.close()
         graph_show(self.targetImg, self.target_content)
+
 
     def clear(self):
         """

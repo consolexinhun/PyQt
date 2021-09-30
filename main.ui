@@ -7,19 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1104</width>
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <height>762</height>
-=======
-    <height>753</height>
->>>>>>> a13668a1f5ef79e57ff1f1e8a8ddae5505f7751e
-=======
-    <height>753</height>
->>>>>>> a13668a1f5ef79e57ff1f1e8a8ddae5505f7751e
+    <height>758</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>组织病理图像分割软件</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGraphicsView" name="sourceImg">
