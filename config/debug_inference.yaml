@@ -1,0 +1,19 @@
+OUTPUT_DIR: ./output/test_3
+
+MODEL:
+  MODEL: "UNet16Layer4"
+  LOSS: "DiceLossV1"
+  DEEP_SUP: "v2"
+  # RESUME: "001"
+
+SOLVER:
+  LR: 0.01
+  EPOCHS: 2
+  SAVE_INTERVAL_EPOCH: 1
+  BATCH_SIZE_TRAIN: 16
+
+DATA:
+  DOWN_SAMPLE_RATE: 4.0
+  DATASET_TRAIN: './data/data_split/0_train.txt'
+  DATASET_VALID: './data/data_split/0_valid.txt'
+  DATASET_TEST: './data/data_split/0_valid.txt'
