@@ -20,14 +20,8 @@ def graph_show(graph, img):
     :param img: np
     :return:
     """
-    if len(img.shape) == 3:  # 彩图
-        qt_img = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888)
-    elif len(img.shape) == 2:  # 灰度图，转 PIL，然后再转为 QImage
-        pil_img = Image.fromarray(img)  # np -> PIL
-        qt_img = ImageQt.ImageQt(pil_img)  # PIL -> QImage
-        # qt_img = QImage(img.data, img.shape[1], img.shape[0], QImage.Format_Grayscale8)  # 这个不行
-    else:
-        raise Exception(f"既不是灰度图也不是彩图")
+    pil_img = Image.fromarray(img)  # np -> PIL
+    qt_img = ImageQt.ImageQt(pil_img)  # PIL -> QImage
 
     source_scene = QGraphicsScene()
     graph_width, graph_height = graph.width()-2, graph.height()-2
@@ -86,11 +80,6 @@ class MyMainWindow(QMainWindow):
 
         graph_show(self.sourceImg, self.source_content)
 
-        # size = (int(self.sourceImg.width()-2), int(self.sourceImg.height()-2))  # 2 边距，否则会滚动条
-        # self.source_content = cv2.resize(img, size, interpolation=cv2.INTER_LINEAR)
-        # self.source_content = cv2.cvtColor(self.source_content, cv2.COLOR_BGR2RGB)
-        # self.sourceImg.setPixmap(QPixmap.fromImage(self.qtImg)) # label 才是这么写的
-
     def savefile(self):
         if self.target_content is None:
             QMessageBox.warning(self, "警告", "请对图像进行操作", QMessageBox.Ok)
@@ -103,7 +92,6 @@ class MyMainWindow(QMainWindow):
         else:
             cv2.imwrite(save_name, self.target_content[:, :, ::-1])  # 保存图像必须是 BGR 的
 
-
     def rot90(self):
         """
         func:
@@ -114,9 +102,6 @@ class MyMainWindow(QMainWindow):
             self.target_content = self.source_content
 
         self.target_content = np.rot90(self.target_content)
-        # size = (int(self.targetImg.width() - 2), int(self.targetImg.height() - 2))  # 2 边距，否则会滚动条
-        # self.target_content = cv2.resize(self.target_content, size, interpolation=cv2.INTER_LINEAR)
-
         graph_show(self.targetImg, self.target_content)
 
     def threshold(self):
@@ -130,10 +115,6 @@ class MyMainWindow(QMainWindow):
         threshold, self.target_content = cv2.threshold(self.target_content, 0, 255,
                                                        cv2.THRESH_OTSU | cv2.THRESH_BINARY)
         self.msg.setText(f"二值化的阈值为:{threshold}")
-
-        size = (int(self.targetImg.width()-2), int(self.targetImg.height()-2))  # 2 边距，否则会滚动条
-        self.target_content = cv2.resize(self.target_content, size, interpolation=cv2.INTER_LINEAR)
-
         graph_show(self.targetImg, self.target_content)
 
     def gray(self):
