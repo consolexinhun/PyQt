@@ -5,19 +5,19 @@ import numpy as np
 from PIL import Image, ImageQt
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog, \
-     QGraphicsScene, QProgressBar, QProgressDialog
+     QGraphicsScene
 from PyQt5.uic import loadUi
-from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtCore import QThread
+from PyQt5.QtGui import QImage, QPixmap, QIcon
 
 from single_inference import do_inference, do_inference_progress
-# from progress import ProgressBarWindow
 
 
 class MyProgressBar(QMainWindow):
     def __init__(self, parent=None):
         super(MyProgressBar, self).__init__(parent)
         loadUi("progress.ui", self)
+
+        self.setWindowIcon(QIcon("icons/ECNU.jpg"))
 
 
 def graph_show(graph, img):
@@ -40,6 +40,8 @@ def graph_show(graph, img):
 class MyMainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MyMainWindow, self).__init__(parent)
+
+        self.setWindowIcon(QIcon("icons/ECNU.jpg"))
         loadUi("main.ui", self)
 
         self.source_content = None  # 原图 np 数据
@@ -167,7 +169,6 @@ class MyMainWindow(QMainWindow):
 
         progress.close()
         graph_show(self.targetImg, self.target_content)
-
 
     def clear(self):
         """

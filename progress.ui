@@ -42,7 +42,7 @@
      </font>
     </property>
     <property name="text">
-     <string>正在处理，请稍后</string>
+     <string>正在处理，请稍候</string>
     </property>
    </widget>
   </widget>
