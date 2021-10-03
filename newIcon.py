@@ -52,6 +52,9 @@ class IconWindow(MyMainWindow):
 
 
 if __name__ == '__main__':
+    import cgitb
+    cgitb.enable(format='text')
+
     app = QApplication(sys.argv)
     myWin = IconWindow()
     myWin.show()

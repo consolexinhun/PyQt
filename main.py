@@ -14,10 +14,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1104, 753)
+        MainWindow.resize(1104, 758)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.sourceImg = QtWidgets.QGraphicsView(self.centralwidget)
+        self.sourceImg = ImageView(self.centralwidget)
         self.sourceImg.setGeometry(QtCore.QRect(10, 50, 531, 551))
         self.sourceImg.setObjectName("sourceImg")
         self.msg = QtWidgets.QLabel(self.centralwidget)
@@ -100,7 +100,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "组织病理图像分割软件"))
         self.label_width.setText(_translate("MainWindow", "图像宽度："))
         self.label_height.setText(_translate("MainWindow", "图像高度："))
         self.label.setText(_translate("MainWindow", "源图像"))
@@ -118,3 +118,4 @@ class Ui_MainWindow(object):
         self.actionGray.setText(_translate("MainWindow", "灰度化"))
         self.actionCanny.setText(_translate("MainWindow", "边缘提取"))
         self.actionPSP.setText(_translate("MainWindow", "深度监督PSP"))
+from appMain import ImageView
