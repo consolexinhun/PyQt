@@ -7,6 +7,10 @@ scikit-learn
 opencv-python
 tensorboard
 requests
+pillow
+imageio
+
+pyqt5-tools
 
 conda:
 torchvision
