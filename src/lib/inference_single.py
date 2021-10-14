@@ -53,7 +53,7 @@ def inference_single_dense_crop_progress(dataloader, image, index, model, device
     pred_masks_binary = []
     # 每次送 8 个补丁进去
     # test_batch_size = cfg.SOLVER.BATCH_SIZE_PER_IMG_TEST
-    test_batch_size = 4
+    test_batch_size = 1
     patch_nums, _, h, w = image.shape
     pred_patches_mask = torch.zeros(patch_nums, h, w).float()
 
