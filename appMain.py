@@ -12,8 +12,6 @@ from PyQt5.QtCore import Qt, QRectF, QSizeF, QRect
 
 from single_inference import do_inference, do_inference_progress
 
-from MyGraphicsview import add_move_drag
-
 
 class MyProgressBar(QMainWindow):
     def __init__(self, parent=None):
@@ -27,6 +25,7 @@ def img_qtimg(img):
     pil_img = Image.fromarray(img)  # np -> PIL
     qt_img = ImageQt.ImageQt(pil_img)  # PIL -> QImage
     return qt_img
+
 
 def graph_show(graph, img):
     """
@@ -60,12 +59,14 @@ class ImageView(QGraphicsView):
             self.middleMouseButtonPress(event)
         else:
             super().mousePressEvent(event)
+
     # 判断鼠标松开的类型
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.middleMouseButtonRelease(event)
         else:
             super().mouseReleaseEvent(event)
+
      # 拖拽功能 - 按下 的实现
     def middleMouseButtonPress(self, event):
         # 设置画布拖拽
@@ -75,6 +76,7 @@ class ImageView(QGraphicsView):
                             Qt.LeftButton, event.buttons() | Qt.LeftButton,
                             event.modifiers())
         super().mousePressEvent(fakeEvent)
+
     # 拖拽功能 - 松开 的实现
     def middleMouseButtonRelease(self, event):
         fakeEvent = QMouseEvent(event.type(), event.localPos(),
@@ -112,7 +114,8 @@ class MyMainWindow(QMainWindow):
         self.actionOpen.triggered.connect(self.openfile)  # 打开
         self.actionSave.triggered.connect(self.savefile)  # 保存图片
         self.actionClear.triggered.connect(self.clear)  # 清空
-        self.actionQuit.triggered.connect(QApplication.quit)  # 退出
+        # self.actionQuit.triggered.connect(QApplication.quit)  # 退出
+        self.actionQuit.triggered.connect(self.quit_func)
 
         # 图像操作
         self.actionRot90.triggered.connect(self.rot90)  # 旋转90度
@@ -122,31 +125,6 @@ class MyMainWindow(QMainWindow):
 
         # 图像分割
         self.actionPSP.triggered.connect(self.psp)  # psp 语义分割
-
-        # self.new = ImageView(image="D:/594870.jpg")
-        # self.new.setGeometry(QRect(560, 50, 531, 551))
-
-
-        # 关闭显示图像的滚动条
-        # self.sourceImg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # self.sourceImg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # self.targetImg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # self.targetImg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-        # 对 sourceImg, targetImg 两个 Graphicsview 添加移动和缩放功能，并关闭滚动条
-
-        # ccc = cv2.imread("D:/594870.jpg")
-        # rgb = cv2.cvtColor(ccc, cv2.COLOR_BGR2RGB)
-        # pil_img = Image.fromarray(rgb)  # np -> PIL
-        # qt_img = ImageQt.ImageQt(pil_img)  # PIL -> QImage
-        # qt_img = qt_img.scaled(self.sourceImg.width(), self.sourceImg.height(), Qt.KeepAspectRatio)
-        # pixmap2 = QPixmap.fromImage(qt_img)
-        #
-        # _scene = QGraphicsScene()  # 场景
-        # _scene.addPixmap(pixmap2)
-        #
-        # self.sourceImg.setScene(_scene)
-
 
     def openfile(self):
         """
@@ -244,17 +222,6 @@ class MyMainWindow(QMainWindow):
 
         progress = MyProgressBar(self)
         progress.progressBar.setValue(0)
-#         progress.setStyleSheet("
-# QProgressBar {
-#     border: 2px solid #2196F3;/*边框以及边框颜色*/
-#     border-radius: 5px;
-#     background-color: #E0E0E0;
-# }
-# QProgressBar::chunk {
-#     background-color: #2196F3;
-#     width: 10px; /*区块宽度*/
-#     margin: 0.5px;
-# }")
         progress.show()
         QApplication.processEvents()
         # for i in range(1, 101):
@@ -281,6 +248,11 @@ class MyMainWindow(QMainWindow):
         self.source_content = None  # 原图 np 数据
         self.target_content = None  # 变换后的 np 数据
         self.img_name = None  # 图像路径
+
+    def quit_func(self):
+        reply = QMessageBox.critical(self, "退出程序", "是否真的要退出程序", QMessageBox.Ok | QMessageBox.Close)
+        if reply == QMessageBox.Ok:
+            QApplication.quit()
 
     # def wheelEvent(self, event):
     #     # 放大触发

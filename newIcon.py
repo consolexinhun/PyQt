@@ -27,7 +27,8 @@ class IconWindow(MyMainWindow):
 
         quitAction = QAction(QIcon(QApplication.style().standardIcon(QStyle.SP_LineEditClearButton)), "&退出", self)
         quitAction.setShortcut("Ctrl+Q")
-        quitAction.triggered.connect(QApplication.quit)
+        # quitAction.triggered.connect(QApplication.quit)
+        quitAction.triggered.connect(self.quit_func)
         self.toolBar.addAction(quitAction)
 
         rotAction = QAction(QIcon(QApplication.style().standardIcon(QStyle.SP_ArrowForward)), "&旋转", self)
